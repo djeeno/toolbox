@@ -10,12 +10,13 @@ sudo -v || exit 1
 readonly VERSION='0.0.1'
 readonly PROGRAM_NAME="$(basename -- "$0")"
 readonly PROJECT_NAME='orderqr'
-readonly VIRTUALBOX_DMG_URI='http://download.virtualbox.org/virtualbox/5.2.18/VirtualBox-5.2.18-124319-OSX.dmg'
+readonly APPLICATIONS_DIR='/Applications/VirtualBox.app'
+readonly DMG_URI='http://download.virtualbox.org/virtualbox/5.2.18/VirtualBox-5.2.18-124319-OSX.dmg'
 readonly WORK_DIR="${HOME}/Desktop/${PROJECT_NAME}"
 readonly DOWNLOADS_DIR="${WORK_DIR}/downloads"
-readonly VIRTUALBOX_DMG_LOCAL_PATH="${DOWNLOADS_DIR}/$(basename -- ${VIRTUALBOX_DMG_URI})"
-readonly VIRTUALBOX_HDIUTIL_VOLUMES_PATH='/Volumes/VirtualBox'
-readonly VIRTUALBOX_HDIUTIL_PKG_PATH="${VIRTUALBOX_HDIUTIL_VOLUMES_PATH}/VirtualBox.pkg"
+readonly DMG_LOCAL_PATH="${DOWNLOADS_DIR}/$(basename -- ${DMG_URI})"
+readonly HDIUTIL_VOLUMES_PATH='/Volumes/VirtualBox'
+readonly HDIUTIL_PKG_PATH="${HDIUTIL_VOLUMES_PATH}/VirtualBox.pkg"
 
 ##
 # Output UTC date for log
@@ -77,43 +78,43 @@ main() {
     return 1
   fi
 
-  # 既にVirtualBoxがインストールされているかどうか確認
-  if [ -d /Applications/VirtualBox.app ]; then
-    PrintErrLog I 'already installed: /Applications/VirtualBox.app'
+  # 既にインストールされているかどうか確認
+  if [ -d "${APPLICATIONS_DIR}" ]; then
+    PrintErrLog I "already installed: ${APPLICATIONS_DIR}"
     return 0
   fi
 
-  # 既にVirtualBoxのインストーラーがダウンロードされているか確認
-  if [ -f "${VIRTUALBOX_DMG_LOCAL_PATH}" ]; then
-    PrintErrLog I "already downloaded: ${VIRTUALBOX_DMG_LOCAL_PATH}"
+  # 既にインストーラーがダウンロードされているか確認
+  if [ -f "${DMG_LOCAL_PATH}" ]; then
+    PrintErrLog I "already downloaded: ${DMG_LOCAL_PATH}"
   else
     # ダウンロード用ディレクトリ作成
     mkdir -p "${DOWNLOADS_DIR}"
 
     # ダウンロード
-    PrintErrLog I "try to download ${VIRTUALBOX_DMG_URI} ..."
-    curl -LR "${VIRTUALBOX_DMG_URI}" -o "${VIRTUALBOX_DMG_LOCAL_PATH}"
+    PrintErrLog I "try to download ${DMG_URI} ..."
+    curl -LR "${DMG_URI}" -o "${DMG_LOCAL_PATH}"
     if [ $? -eq 0 ]; then
-      PrintErrLog I "complete to download ${VIRTUALBOX_DMG_LOCAL_PATH}"
+      PrintErrLog I "complete to download ${DMG_LOCAL_PATH}"
     else
-      PrintErrLog E "failed to download: ${VIRTUALBOX_DMG_URI}"
-      rm -f "${VIRTUALBOX_DMG_LOCAL_PATH}"
+      PrintErrLog E "failed to download: ${DMG_URI}"
+      rm -f "${DMG_LOCAL_PATH}"
       return 1
     fi
   fi
 
-  # VirtualBox インストール
-  PrintErrLog I "try to install ${VIRTUALBOX_DMG_LOCAL_PATH} ..."
-  hdiutil mount "${VIRTUALBOX_DMG_LOCAL_PATH}"
-  sudo installer -pkg "${VIRTUALBOX_HDIUTIL_PKG_PATH}" -target / -lang ja
-  hdiutil detach "${VIRTUALBOX_HDIUTIL_VOLUMES_PATH}"
+  # インストール
+  PrintErrLog I "try to install ${DMG_LOCAL_PATH} ..."
+  hdiutil mount "${DMG_LOCAL_PATH}"
+  sudo installer -pkg "${HDIUTIL_PKG_PATH}" -target / -lang ja
+  hdiutil detach "${HDIUTIL_VOLUMES_PATH}"
 
   # インストールされたか確認
-  if [ -d /Applications/VirtualBox.app ]; then
-    PrintErrLog I 'complete to install: /Applications/VirtualBox.app'
+  if [ -d "${APPLICATIONS_DIR}" ]; then
+    PrintErrLog I "complete to install: ${APPLICATIONS_DIR}"
     return 0
   else
-    PrintErrLog E 'failed to install: /Applications/VirtualBox.app'
+    PrintErrLog E "failed to install: ${APPLICATIONS_DIR}"
     return 1
   fi
 }
