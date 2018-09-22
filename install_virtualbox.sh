@@ -3,9 +3,6 @@
 ## If an error occurs, EXIT abnormally.
 #set -e
 
-# sudo validation
-sudo -v || exit 1
-
 # Global variables
 readonly VERSION='0.0.1'
 readonly PROGRAM_NAME="$(basename -- "$0")"
@@ -83,6 +80,10 @@ main() {
     PrintErrLog I "already installed: ${APPLICATIONS_DIR}"
     return 0
   fi
+
+  # sudo validation
+  PrintErrLog I 'Please enter the administrator password.'
+  sudo -v || exit 1
 
   # 既にインストーラーがダウンロードされているか確認
   if [ -f "${DMG_LOCAL_PATH}" ]; then
