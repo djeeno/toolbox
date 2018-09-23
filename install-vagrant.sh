@@ -4,16 +4,16 @@
 #set -e
 
 # Global variables
-readonly VERSION='0.0.1'
-readonly PROGRAM_NAME="$(basename -- "$0")"
-readonly PROJECT_NAME='orderqr'
-readonly APPLICATIONS_DIR='/opt/vagrant'
-readonly DMG_URI='https://releases.hashicorp.com/vagrant/2.1.5/vagrant_2.1.5_x86_64.dmg'
-readonly WORK_DIR="${HOME}/Desktop/${PROJECT_NAME}"
-readonly DOWNLOADS_DIR="${WORK_DIR}/downloads"
-readonly DMG_LOCAL_PATH="${DOWNLOADS_DIR}/$(basename -- ${DMG_URI})"
-readonly HDIUTIL_VOLUMES_PATH='/Volumes/Vagrant'
-readonly HDIUTIL_PKG_PATH="${HDIUTIL_VOLUMES_PATH}/Vagrant.pkg"
+readonly __MYSH_VERSION='0.0.1'
+readonly __MYSH_PROGRAM_NAME="$(basename -- "$0")"
+readonly __MYSH_PROJECT_NAME='orderqr'
+readonly __MYSH_APPLICATIONS_DIR='/opt/vagrant'
+readonly __MYSH_DMG_URI='https://releases.hashicorp.com/vagrant/2.1.5/vagrant_2.1.5_x86_64.dmg'
+readonly __MYSH_WORK_DIR="${HOME}/Desktop/${__MYSH_PROJECT_NAME}"
+readonly __MYSH_DOWNLOADS_DIR="${__MYSH_WORK_DIR}/downloads"
+readonly __MYSH_DMG_LOCAL_PATH="${__MYSH_DOWNLOADS_DIR}/$(basename -- ${__MYSH_DMG_URI})"
+readonly __MYSH_HDIUTIL_VOLUMES_PATH='/Volumes/Vagrant'
+readonly __MYSH_HDIUTIL_PKG_PATH="${__MYSH_HDIUTIL_VOLUMES_PATH}/Vagrant.pkg"
 
 ##
 # Output UTC date for log
@@ -65,7 +65,7 @@ PrintErrLog() { (
   esac
 
   # output log message to stderr
-  printf '%s\n' "${logMessages}" | sed "s/^/$(PrintDateUTC) ${PROGRAM_NAME}[$$]: ${tag} /" >/dev/stderr
+  printf '%s\n' "${logMessages}" | sed "s/^/$(PrintDateUTC) ${__MYSH_PROGRAM_NAME}[$$]: ${tag} /" >/dev/stderr
 )}
 
 main() {
@@ -76,8 +76,8 @@ main() {
   fi
 
   # 既にインストールされているかどうか確認
-  if [ -d "${APPLICATIONS_DIR}" ]; then
-    PrintErrLog I "already installed: ${APPLICATIONS_DIR}"
+  if [ -d "${__MYSH_APPLICATIONS_DIR}" ]; then
+    PrintErrLog I "already installed: ${__MYSH_APPLICATIONS_DIR}"
     return 0
   fi
 
@@ -86,36 +86,36 @@ main() {
   sudo -v || exit 1
 
   # 既にインストーラーがダウンロードされているか確認
-  if [ -f "${DMG_LOCAL_PATH}" ]; then
-    PrintErrLog I "already downloaded: ${DMG_LOCAL_PATH}"
+  if [ -f "${__MYSH_DMG_LOCAL_PATH}" ]; then
+    PrintErrLog I "already downloaded: ${__MYSH_DMG_LOCAL_PATH}"
   else
     # ダウンロード用ディレクトリ作成
-    mkdir -p "${DOWNLOADS_DIR}"
+    mkdir -p "${__MYSH_DOWNLOADS_DIR}"
 
     # ダウンロード
-    PrintErrLog I "try to download ${DMG_URI} ..."
-    curl -LR "${DMG_URI}" -o "${DMG_LOCAL_PATH}"
+    PrintErrLog I "try to download ${__MYSH_DMG_URI} ..."
+    curl -LR "${__MYSH_DMG_URI}" -o "${__MYSH_DMG_LOCAL_PATH}"
     if [ $? -eq 0 ]; then
-      PrintErrLog I "complete to download ${DMG_LOCAL_PATH}"
+      PrintErrLog I "complete to download ${__MYSH_DMG_LOCAL_PATH}"
     else
-      PrintErrLog E "failed to download: ${DMG_URI}"
-      rm -f "${DMG_LOCAL_PATH}"
+      PrintErrLog E "failed to download: ${__MYSH_DMG_URI}"
+      rm -f "${__MYSH_DMG_LOCAL_PATH}"
       return 1
     fi
   fi
 
   # インストール
-  PrintErrLog I "try to install ${DMG_LOCAL_PATH} ..."
-  hdiutil mount "${DMG_LOCAL_PATH}"
-  sudo installer -pkg "${HDIUTIL_PKG_PATH}" -target / -lang ja
-  hdiutil detach "${HDIUTIL_VOLUMES_PATH}"
+  PrintErrLog I "try to install ${__MYSH_DMG_LOCAL_PATH} ..."
+  hdiutil mount "${__MYSH_DMG_LOCAL_PATH}"
+  sudo installer -pkg "${__MYSH_HDIUTIL_PKG_PATH}" -target / -lang ja
+  hdiutil detach "${__MYSH_HDIUTIL_VOLUMES_PATH}"
 
   # インストールされたか確認
-  if [ -d "${APPLICATIONS_DIR}" ]; then
-    PrintErrLog I "complete to install: ${APPLICATIONS_DIR}"
+  if [ -d "${__MYSH_APPLICATIONS_DIR}" ]; then
+    PrintErrLog I "complete to install: ${__MYSH_APPLICATIONS_DIR}"
     return 0
   else
-    PrintErrLog E "failed to install: ${APPLICATIONS_DIR}"
+    PrintErrLog E "failed to install: ${__MYSH_APPLICATIONS_DIR}"
     return 1
   fi
 }
