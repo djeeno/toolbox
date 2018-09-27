@@ -31,7 +31,7 @@ readonly __MYSH_HDIUTIL_PKG_PATH="${__MYSH_HDIUTIL_VOLUMES_PATH}/VirtualBox.pkg"
 #   0 always
 ##
 PrintDateUTC() { (
-  LC_ALL=C TZ=UTC date +'%Y%m%dT%H%M%SZ'
+  LC_ALL=C TZ=UTC date +%Y%m%dT%H%M%SZ
 )}
 
 ##
