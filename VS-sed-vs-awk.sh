@@ -55,20 +55,24 @@ PrintErrLog() { (
 
 readonly TIMES=200
 
-PrintErrLog I "time of \"sed x ${TIMES}\": $(time \
+PrintErrLog I "time of \"sed x ${TIMES}\":
+$(time \
   (
     for i in $(seq 1 "${TIMES}"); do
       echo foobar | sed "s/^/$(LC_ALL=C TZ=UTC date +%Y%m%dT%H%M%SZ) /"
     done | tail -3
   ) 2>&1
-)"
+)
+" # ここまで
 
-PrintErrLog I "time of \"awk x ${TIMES}\": $(time \
+PrintErrLog I "time of \"awk x ${TIMES}\":
+$(time \
   (
     for i in $(seq 1 "${TIMES}"); do
       echo foobar | awk '{print "'$(LC_ALL=C TZ=UTC date +%Y%m%dT%H%M%SZ)' "$0}'
     done | tail -3
   ) 2>&1
-)"
+)
+"
 
 PrintErrLog I "多分awkの方が早い"
