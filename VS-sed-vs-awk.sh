@@ -71,3 +71,4 @@ PrintErrLog I "time of \"awk x ${TIMES}\": $(time \
   ) 2>&1
 )"
 
+PrintErrLog I "多分awkの方が早い"

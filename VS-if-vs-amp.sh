@@ -75,3 +75,4 @@ PrintErrLog I "time of \"&& x ${TIMES}\": $(time \
   ) 2>&1
 )"
 
+PrintErrLog I "多分ifの方が早い"
